@@ -13,10 +13,11 @@ config :expert_advice,
 # Configures the endpoint
 config :expert_advice, ExpertAdviceWeb.Endpoint,
   url: [host: "localhost"],
-  secret_key_base: "LKMWj1X6mfNgI6/cfcy5wRv56G3a4dB39ZBDc+ABLIm1V/Y5lS9SpkZ8LAL3eHmg",
+  secret_key_base: "rDKJ9nxjZpFtTX1OYvvF3dSGDazFGAsLediT9283tjH5GXsR+AsrEvILqLG8Qoju",
   render_errors: [view: ExpertAdviceWeb.ErrorView, accepts: ~w(html json)],
   pubsub: [name: ExpertAdvice.PubSub, adapter: Phoenix.PubSub.PG2]
 
+config :scrivener_html, routes_helper: MyApp.Router.Helpers, view_style: :bootstrap
 # Configures Elixir's Logger
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",

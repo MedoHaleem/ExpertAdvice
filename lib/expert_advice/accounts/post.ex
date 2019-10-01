@@ -19,5 +19,15 @@ defmodule ExpertAdvice.Accounts.Post do
     |> validate_required([:title, :slug, :body])
     |> unique_constraint(:title)
     |> assoc_constraint(:user)
+    |> process_slug
   end
+
+  defp process_slug(%Ecto.Changeset{valid?: validity, changes: %{title: title}} = changeset) do
+    case validity do
+      true -> put_change(changeset, :slug, Slugger.slugify_downcase(title))
+      false -> changeset
+    end
+  end
+
+  defp process_slug(changeset), do: changeset
 end

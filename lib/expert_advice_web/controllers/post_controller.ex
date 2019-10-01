@@ -6,9 +6,9 @@ defmodule ExpertAdviceWeb.PostController do
 
   plug :authenticate_user when action in [:new, :create, :edit, :update, :delete]
 
-  def index(conn, _params, _current_user) do
-    posts = Accounts.list_posts()
-    render(conn, "index.html", posts: posts)
+  def index(conn, params, _current_user) do
+    page = Accounts.list_posts(params)
+    render(conn, "index.html", posts: page.entries, page: page)
   end
 
   def new(conn, _params, _current_user) do

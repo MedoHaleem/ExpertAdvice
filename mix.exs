@@ -20,7 +20,7 @@ defmodule ExpertAdvice.MixProject do
   def application do
     [
       mod: {ExpertAdvice.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools, :scrivener_ecto, :scrivener_html]
     ]
   end
 
@@ -44,6 +44,9 @@ defmodule ExpertAdvice.MixProject do
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
       {:pbkdf2_elixir, "~> 1.0"},
+      {:scrivener_ecto, "~> 2.2"},
+      {:scrivener_html, "~> 1.8"},
+      {:slugger, "~> 0.3"}
     ]
   end
 
