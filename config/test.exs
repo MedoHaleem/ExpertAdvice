@@ -3,7 +3,7 @@ use Mix.Config
 # Configure your database
 config :expert_advice, ExpertAdvice.Repo,
   username: "postgres",
-  password: "postgres",
+  password: "password",
   database: "expert_advice_test",
   hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox
