@@ -3,7 +3,7 @@ use Mix.Config
 # Configure your database
 config :expert_advice, ExpertAdvice.Repo,
   username: "postgres",
-  password: "password",
+  password: "postgres",
   database: "expert_advice_dev",
   hostname: "localhost",
   show_sensitive_data_on_connection_error: true,

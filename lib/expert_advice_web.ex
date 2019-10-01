@@ -23,7 +23,6 @@ defmodule ExpertAdviceWeb do
 
       import Plug.Conn
       import ExpertAdviceWeb.Gettext
-      import ExpertAdviceWeb.Auth, only: [authenticate_user: 2]
       alias ExpertAdviceWeb.Router.Helpers, as: Routes
     end
   end
