@@ -4,19 +4,25 @@
     <meta charset="utf-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>ExpertAdvice · Phoenix Framework</title>
+    <title>Expert Advice · Phoenix Framework</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" href="<%= Routes.static_path(@conn, "/css/app.css") %>"/>
   </head>
   <body>
     <header>
+    
       <section class="container">
         <nav role="navigation">
           <ul>
-            <li><a href="https://hexdocs.pm/phoenix/overview.html">Get Started</a></li>
+          <%= if @current_user do %>
+            <li><%= @current_user.name %> | <%= link "Log out", to: Routes.session_path(@conn, :delete, @current_user), method: "delete", class: "main-nav" %></li>
+            <% else %>
+               <li><%= link "Log in", to: Routes.session_path(@conn, :new), class: "main-nav" %> | <%= link "Register", to: Routes.user_path(@conn, :new), class: "main-nav" %></li>
+          <% end %>
           </ul>
         </nav>
-        <a href="http://phoenixframework.org/" class="phx-logo">
-          <img src="<%= Routes.static_path(@conn, "/images/phoenix.png") %>" alt="Phoenix Framework Logo"/>
+        <a href="/" class="main-title" style="font-size: x-large">
+          Expert Advice
         </a>
       </section>
     </header>
