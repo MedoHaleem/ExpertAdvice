@@ -1,56 +1,10 @@
 defmodule ExpertAdvice.Accounts do
+  @moduledoc """
+  The Accounts context.
+  """
 
   import Ecto.Query, warn: false
-
-  alias ExpertAdvice.Accounts.User
   alias ExpertAdvice.Repo
-
-  def list_users do
-   Repo.all(User)
-  end
-
-  def get_user(id) do
-    Repo.get(User, id)
-  end
-
-  def get_user!(id) do
-    Repo.get!(User, id)
-  end
-
-  def get_user_by(params) do
-    Repo.get_by(User, params)
-  end
-
-  def change_user(%User{} = user) do
-    User.changeset(user, %{})
-  end
-
-  def create_user(attrs \\ %{}) do
-    %User{} |> User.changeset(attrs) |> Repo.insert()
-  end
-
-  def change_registration(%User{}= user, params) do
-    User.registration_changeset(user, params)
-  end
-
-  def register_user(attrs \\ %{}) do
-    %User{}
-    |> User.registration_changeset(attrs)
-    |> Repo.insert()
-  end
-
-  def authenticate_by_email_and_pass(email, given_pass) do
-    user = get_user_by(email: email)
-
-    cond do
-      user && Pbkdf2.verify_pass(given_pass, user.password_hash) ->
-        {:ok, user}
-      user ->
-        {:error, :unauthorized}
-      true -> Pbkdf2.no_user_verify()
-        {:error, :not_found}
-    end
-  end
 
   alias ExpertAdvice.Accounts.Post
 
@@ -83,16 +37,6 @@ defmodule ExpertAdvice.Accounts do
   """
   def get_post!(id), do: Repo.get!(Post, id)
 
-  def get_user_question!(%User{} = user, id) do
-    Post
-    |> user_questions_query(user)
-    |> Repo.get!(id)
-  end
-
-  defp user_questions_query(query, %User{id: user_id}) do
-    from(q in query, where: q.user_id == ^user_id)
-  end
-
   @doc """
   Creates a post.
 
@@ -105,10 +49,9 @@ defmodule ExpertAdvice.Accounts do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_question(%User{} = user, attrs \\ %{}) do
+  def create_post(attrs \\ %{}) do
     %Post{}
     |> Post.changeset(attrs)
-    |> Ecto.Changeset.put_assoc(:user, user)
     |> Repo.insert()
   end
 

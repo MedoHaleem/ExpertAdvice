@@ -20,6 +20,7 @@ defmodule ExpertAdviceWeb.Router do
     get "/", PageController, :index
     resources "/users", UserController, only: [:index, :show, :new, :create]
     resources "/sessions", SessionController, only: [:new, :create, :delete]
+    resources "/posts", PostController
   end
 
   # Other scopes may use custom stacks.
