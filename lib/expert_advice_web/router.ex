@@ -17,10 +17,12 @@ defmodule ExpertAdviceWeb.Router do
   scope "/", ExpertAdviceWeb do
     pipe_through :browser
 
-    get "/", PageController, :index
+    get "/", PostController, :index
     resources "/users", UserController, only: [:index, :show, :new, :create]
     resources "/sessions", SessionController, only: [:new, :create, :delete]
-    resources "/posts", PostController
+    resources "/posts", PostController do
+    post "/answer", AnswerController, :create
+    end
   end
 
   # Other scopes may use custom stacks.

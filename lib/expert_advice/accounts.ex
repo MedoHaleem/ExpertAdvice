@@ -3,6 +3,7 @@ defmodule ExpertAdvice.Accounts do
   import Ecto.Query, warn: false
 
   alias ExpertAdvice.Accounts.User
+  alias ExpertAdvice.Accounts.Post
   alias ExpertAdvice.Repo
 
   def list_users do
@@ -64,7 +65,7 @@ defmodule ExpertAdvice.Accounts do
 
   """
   def list_posts(params) do
-    Post |> Repo.paginate(params)
+    Post |> Post.newest_question() |>Repo.paginate(params)
   end
 
   @doc """
@@ -81,12 +82,16 @@ defmodule ExpertAdvice.Accounts do
       ** (Ecto.NoResultsError)
 
   """
-  def get_post!(id), do: Repo.get!(Post, id)
+  def get_post!(slug) do
+    Post
+    |> Repo.get_by!(%{slug: slug})
+    |> Repo.preload(:answers)
+  end
 
-  def get_user_question!(%User{} = user, id) do
+  def get_user_question!(%User{} = user, slug) do
     Post
     |> user_questions_query(user)
-    |> Repo.get!(id)
+    |> Repo.get_by!(%{slug: slug})
   end
 
   defp user_questions_query(query, %User{id: user_id}) do
@@ -108,6 +113,14 @@ defmodule ExpertAdvice.Accounts do
   def create_question(%User{} = user, attrs \\ %{}) do
     %Post{}
     |> Post.changeset(attrs)
+    |> Ecto.Changeset.put_assoc(:user, user)
+    |> Repo.insert()
+  end
+
+  def create_answer(%User{} = user, %Post{} = post, attrs \\ %{}) do
+    %Post{}
+    |> Post.answer_changeset(attrs)
+    |> Ecto.Changeset.put_assoc(:post, post)
     |> Ecto.Changeset.put_assoc(:user, user)
     |> Repo.insert()
   end
@@ -157,5 +170,9 @@ defmodule ExpertAdvice.Accounts do
   """
   def change_post(%Post{} = post) do
     Post.changeset(post, %{})
+  end
+
+  def change_answer(%Post{} = post) do
+    Post.answer_changeset(post, %{})
   end
 end

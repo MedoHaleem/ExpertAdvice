@@ -8,6 +8,7 @@ defmodule ExpertAdviceWeb.PostController do
 
   def index(conn, params, _current_user) do
     page = Accounts.list_posts(params)
+    IO.inspect page.entries
     render(conn, "index.html", posts: page.entries, page: page)
   end
 
@@ -30,7 +31,8 @@ defmodule ExpertAdviceWeb.PostController do
 
   def show(conn, %{"id" => id}, _current_user) do
     post = Accounts.get_post!(id)
-    render(conn, "show.html", post: post)
+    answer_changeset = Accounts.change_answer(%Post{})
+    render(conn, "show.html", post: post, answer_changeset: answer_changeset)
   end
 
   def edit(conn, %{"id" => id}, current_user) do
