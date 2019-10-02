@@ -9,13 +9,13 @@
   <%= text_input f, :title %>
   <%= error_tag f, :title %>
 
-  <%= label f, :slug %>
-  <%= text_input f, :slug %>
-  <%= error_tag f, :slug %>
-
   <%= label f, :body %>
   <%= textarea f, :body %>
   <%= error_tag f, :body %>
+
+  <%= label f, :tag %>
+  <%= textarea f, :tags, value: @tags %>
+  <%= error_tag f, :tags %>
 
   <div>
     <%= submit "Save" %>

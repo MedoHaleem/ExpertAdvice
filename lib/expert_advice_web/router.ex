@@ -18,10 +18,11 @@ defmodule ExpertAdviceWeb.Router do
     pipe_through :browser
 
     get "/", PostController, :index
+    get "/ask", PostController, :new
     resources "/users", UserController, only: [:index, :show, :new, :create]
     resources "/sessions", SessionController, only: [:new, :create, :delete]
     resources "/posts", PostController do
-    post "/answer", AnswerController, :create
+      post "/answer", AnswerController, :create
     end
   end
 

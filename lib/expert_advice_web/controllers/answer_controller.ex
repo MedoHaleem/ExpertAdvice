@@ -11,8 +11,7 @@ defmodule ExpertAdviceWeb.AnswerController do
         |> put_flash(:info, "Answer created successfully.")
         |> redirect(to: Routes.post_path(conn, :show, post))
 
-      {:error, %Ecto.Changeset{} = changeset} ->
-        IO.inspect changeset
+      {:error, %Ecto.Changeset{} = _changeset} ->
         conn
         |> put_flash(:error, "Issue creating comment.")
         |> redirect(to: Routes.post_path(conn, :show, post))

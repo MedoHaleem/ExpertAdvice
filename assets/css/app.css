@@ -1,3 +1,23 @@
 /* This file is for your main application css. */
 
 @import "./phoenix.css";
+.main-nav {
+    display: contents 
+}
+.search{
+    width: 70%;
+    margin-bottom: 15px !important;
+}
+.search-input{
+    width: inherit;
+}
+
+.ask {
+    margin: 20px;
+}
+
+.main-title {
+    min-width: 300px;
+    margin: 1rem;
+    display: block;
+}

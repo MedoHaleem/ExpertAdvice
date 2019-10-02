@@ -8,25 +8,26 @@ defmodule ExpertAdviceWeb.PostController do
   plug :authorize_user when action in [:edit, :update, :delete]
 
   def index(conn, params, _current_user) do
-    page = Accounts.list_posts(params)
-    IO.inspect page.entries
+    tags = get_in(params,["search", "tag"])
+    page = Accounts.list_posts(params, tags)
     render(conn, "index.html", posts: page.entries, page: page)
   end
 
   def new(conn, _params, _current_user) do
     changeset = Accounts.change_post(%Post{})
-    render(conn, "new.html", changeset: changeset)
+    render(conn, "new.html", changeset: changeset, tags: [])
   end
 
-  def create(conn, %{"post" => post_params}, current_user) do
+  def create(conn, %{"post" =>  %{"tags"=> tags} = post_params}, current_user) do
     case Accounts.create_question(current_user, post_params) do
       {:ok, post} ->
+        Accounts.add_tags(post, tags)
         conn
         |> put_flash(:info, "Post created successfully.")
         |> redirect(to: Routes.post_path(conn, :show, post))
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        render(conn, "new.html", changeset: changeset)
+        render(conn, "new.html", changeset: changeset, tags: tags)
     end
   end
 
@@ -38,12 +39,14 @@ defmodule ExpertAdviceWeb.PostController do
 
   def edit(conn, %{"id" => id}, current_user) do
     post = Accounts.get_user_question!(current_user, id)
+    tags = Accounts.tags_loaded(post)
     changeset = Accounts.change_post(post)
-    render(conn, "edit.html", post: post, changeset: changeset)
+    render(conn, "edit.html", post: post, changeset: changeset, tags: tags)
   end
 
-  def update(conn, %{"id" => id, "post" => post_params}, current_user) do
+  def update(conn, %{"id" => id, "post" => %{"tags"=> tags} = post_params }, current_user) do
     post = Accounts.get_user_question!(current_user, id)
+    Accounts.update_tags(post, tags)
 
     case Accounts.update_post(post, post_params) do
       {:ok, post} ->
@@ -56,8 +59,8 @@ defmodule ExpertAdviceWeb.PostController do
     end
   end
 
-  def delete(conn, %{"id" => id}) do
-    post = Accounts.get_post!(id)
+  def delete(conn, %{"id" => id}, current_user) do
+    post = Accounts.get_user_question!(current_user, id)
     {:ok, _post} = Accounts.delete_post(post)
 
     conn

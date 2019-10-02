@@ -15,15 +15,15 @@ defmodule ExpertAdvice.Accounts.User do
     user
     |> cast(attrs, [:name, :email])
     |> validate_required([:name, :email])
-    |> validate_length(:email, min: 6, max: 20)
-    |> unique_constraint(:email)
+    |> validate_format(:email, ~r/@/)
+    |> unique_constraint(:email, message: "This email is already taken")
   end
 
   def registration_changeset(user, params) do
     user
     |> changeset(params)
     |> cast(params, [:password])
-    |> validate_length(:password, min: 6, max: 100)
+    |> validate_length(:password, min: 6, message: "The password is too short")
     |> put_pass_hash()
   end
 

@@ -12,6 +12,7 @@ defmodule ExpertAdvice.Accounts.Post do
     belongs_to :user, ExpertAdvice.Accounts.User
     belongs_to :post, ExpertAdvice.Accounts.Post
     has_many :answers, ExpertAdvice.Accounts.Post, foreign_key: :post_id
+    many_to_many :tags, ExpertAdvice.Accounts.Tag, join_through: "posts_tags"
 
     timestamps()
   end
@@ -21,6 +22,7 @@ defmodule ExpertAdvice.Accounts.Post do
     post
     |> cast(attrs, [:title, :body])
     |> validate_required([:title, :body])
+    |> unique_constraint(:title, message: "This question was already asked, make sure your question is unique")
     |> assoc_constraint(:user)
     |> process_slug
   end
@@ -43,7 +45,20 @@ defmodule ExpertAdvice.Accounts.Post do
 
   defp process_slug(changeset), do: changeset
 
-  def newest_question(query) do
+  def newest_question(query, tags) when is_nil(tags) or byte_size(tags) == 0 do
     from q in query, where: is_nil(q.post_id), order_by: [desc: q.inserted_at]
   end
+
+  def newest_question(query, tags) do
+    tags = String.split(tags, ", ")
+    from q in query,
+    preload: [:tags],
+    join: tag in assoc(q, :tags),
+    group_by: q.id,
+    where: tag.name in ^tags,
+    where: is_nil(q.post_id),
+    order_by: [desc: q.inserted_at]
+  end
+
+
 end
