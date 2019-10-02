@@ -14,7 +14,7 @@
   <%= error_tag f, :body %>
 
   <%= label f, :tag %>
-  <%= textarea f, :tags, value: @tags %>
+  <%= textarea f, :tags, value: @tags, placeholder: "Add Tags by seperating by commas" %>
   <%= error_tag f, :tags %>
 
   <div>
