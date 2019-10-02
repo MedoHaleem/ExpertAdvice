@@ -5,6 +5,7 @@ defmodule ExpertAdviceWeb.PostController do
   alias ExpertAdvice.Accounts.Post
 
   plug :authenticate_user when action in [:new, :create, :edit, :update, :delete]
+  plug :authorize_user when action in [:edit, :update, :delete]
 
   def index(conn, params, _current_user) do
     page = Accounts.list_posts(params)
@@ -68,4 +69,19 @@ defmodule ExpertAdviceWeb.PostController do
     args = [conn, conn.params, conn.assigns.current_user]
     apply(__MODULE__, action_name(conn), args)
   end
+
+  defp authorize_user(conn, _params) do
+    %{params: %{"id" => post_id}} = conn
+    post = Accounts.get_post!(post_id)
+
+    if conn.assigns.current_user.id == post.user_id do
+      conn
+    else
+      conn
+      |> put_flash(:error, "You are not authorized to access that page")
+      |> redirect(to: Routes.post_path(conn, :index))
+      |> halt()
+    end
+  end
+
 end
