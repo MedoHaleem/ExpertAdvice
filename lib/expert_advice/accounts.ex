@@ -149,7 +149,7 @@ defmodule ExpertAdvice.Accounts do
 
 
   def add_tags(post, tags) do
-    tags |> String.split(", ") |> Enum.each(&add_tag(post, &1))
+    tags |> String.split(", ") |> MapSet.new |> Enum.to_list |> Enum.each(&add_tag(post, &1))
   end
   def remove_tag(post, tag_name) when is_binary(tag_name) do
       case Repo.get_by(Tag, %{name: tag_name}) do
