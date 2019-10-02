@@ -10,7 +10,7 @@ defmodule ExpertAdvice.TestHelpers do
 
     user
   end
-  def question_fixture(%Accounts.User{} = user, attrs \\ %{}) do
+  def post_fixture(%Accounts.User{} = user, attrs \\ %{}) do
     attrs =
     Enum.into(attrs, %{
       title: "A Question",

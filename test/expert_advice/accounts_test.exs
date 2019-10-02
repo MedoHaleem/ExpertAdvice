@@ -1,5 +1,5 @@
 defmodule ExpertAdvice.AccountsTest do
-  use ExpertAdvice.DataCase
+  use ExpertAdvice.DataCase, async: true
 
   alias ExpertAdvice.Accounts
   alias ExpertAdvice.Accounts.{User, Tag, Post}
@@ -78,10 +78,63 @@ defmodule ExpertAdvice.AccountsTest do
   describe "posts" do
     alias ExpertAdvice.Accounts.Post
 
-    @valid_attrs %{title: "some slug", body: "some body"}
-    @update_attrs %{title: "some updated title", body: "some updated body"}
+    @valid_attrs %{title: "some title", body: "some body"}
     @invalid_attrs %{body: nil, title: nil}
 
+    test "list_posts/0 returns all posts" do
+      owner = user_fixture()
+      %Post{id: id1} = post_fixture(owner)
+      page = Accounts.list_posts(%{}, "")
+      assert [%Post{id: ^id1}] = page.entries
+    end
+
+    test "get_post!/1 returns the post with given id" do
+      owner = user_fixture()
+      %Post{slug: slug} = post_fixture(owner)
+      assert %Post{slug: ^slug} = Accounts.get_post!(slug)
+    end
+
+     test "create_question/2 with valid data creates a question" do
+      owner = user_fixture()
+       assert {:ok, %Post{} = post} = Accounts.create_question(owner, @valid_attrs)
+       assert post.body == "some body"
+       assert post.title == "some title"
+       assert post.slug == "some-title"
+     end
+
+     test "create_question/2 with invalid data returns error changeset" do
+       owner = user_fixture()
+       assert {:error, %Ecto.Changeset{}} = Accounts.create_question(owner, @invalid_attrs)
+     end
+
+     test "update_post/2 with valid data updates the post" do
+       owner = user_fixture()
+       post = post_fixture(owner)
+       assert {:ok, post} = Accounts.update_post(post, %{title: "updated title"})
+       assert %Post{} = post
+       assert post.title == "updated title"
+     end
+
+     test "update_post/2 with invalid data returns error changeset" do
+       owner = user_fixture()
+       %Post{slug: slug} = post = post_fixture(owner)
+       assert {:error, %Ecto.Changeset{}} = Accounts.update_post(post, @invalid_attrs)
+       assert %Post{slug: ^slug} = Accounts.get_post!(slug)
+     end
+
+     test "delete_post/1 deletes the post" do
+       owner = user_fixture()
+       post = post_fixture(owner)
+       assert {:ok, %Post{}} = Accounts.delete_post(post)
+       page = Accounts.list_posts(%{}, "")
+       assert page.entries == []
+     end
+
+     test "change_post/1 returns a post changeset" do
+       owner = user_fixture()
+       post = post_fixture(owner)
+       assert %Ecto.Changeset{} = Accounts.change_post(post)
+     end
 
   end
 end
