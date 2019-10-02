@@ -22,6 +22,7 @@ defmodule ExpertAdvice.DataCase do
       import Ecto.Changeset
       import Ecto.Query
       import ExpertAdvice.DataCase
+      import ExpertAdvice.TestHelpers
     end
   end
 
